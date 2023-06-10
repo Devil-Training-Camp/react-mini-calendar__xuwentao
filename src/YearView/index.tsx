@@ -5,7 +5,7 @@ import classNames from 'classnames';
 import { useCallback } from 'react';
 import { Value } from '../common/types';
 
-const className = 'react-calendar__year-view__months';
+const className = 'react-mini-calendar__year-view__months';
 
 const anyDecember = getDateBySetMonth(new Date(), -1);
 
