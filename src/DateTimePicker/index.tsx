@@ -1,7 +1,10 @@
 import { useRef, useState, useLayoutEffect } from 'react';
 import Calendar from '../Calendar';
+// Value 这个名字太泛化了，应该 Value => CalendarValue 之类的
 import type { Value } from '../Calendar/common/types';
+// View 也是，应该 CalendarViewTypes 之类的
 import { View } from '../Calendar/common/constants';
+// areDatesEqual => isDatesEqual
 import { getDayStart, areDatesEqual } from '../Calendar/common/date-utils';
 
 import TimePicker from '../TimePicker';
@@ -42,6 +45,8 @@ export default function DateTimePicker({
   const [coverStyle, setCoverStyle] = useState<{ width: number; height: number } | undefined>()
 
   function setMinOrMaxForTime(date?: Date)  {
+    // 这里没看懂，为啥 minDate 部位 falsy 值的时候要设置为 undefined？
+    // 而且下面紧接着又改了值
     minDate && setMinDateForTime(undefined)
     maxDate && setMaxDateForTime(undefined)
     if (!date) {
@@ -58,6 +63,9 @@ export default function DateTimePicker({
   function handleCalendarChange(value: Value) {
     setValue(value);
     setCalendarActive(false);
+    // 我会习惯用 Array.isArray 来判断一个值是否为数组，感觉：
+    // 1. 简洁且不依赖语言特性；
+    // 2. instanceof 是基于原型链判断的，虽然绝大多数情况下是 ok 的，但也可能存在边界 case 导致判断出错；
     setMinOrMaxForTime(value instanceof Array ? value[1] : value);
 
     onChange?.(value);
@@ -68,6 +76,8 @@ export default function DateTimePicker({
     if (tempValue === undefined) {
       return;
     }
+    // 有太多 array 判断逻辑了
+    // 而且，这里大眼一看真看不懂 array vs non-array 的区别
     if (tempValue instanceof Array) {
       tempValue[1] = getDateFromTimePickerValue(tempValue[1], timePickerValue);
     } else {

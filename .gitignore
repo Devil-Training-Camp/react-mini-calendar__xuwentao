@@ -13,6 +13,7 @@ dist-ssr
 *.local
 
 # Editor directories and files
+# 不对啊，vscode 配置文件一般也会 commit 上去的，以便大家保持一致的配置
 .vscode/*
 !.vscode/extensions.json
 .idea
