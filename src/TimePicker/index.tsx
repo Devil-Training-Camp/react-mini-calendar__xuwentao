@@ -30,6 +30,9 @@ interface TimePickerProps {
 
 export default function TimePicker(props: TimePickerProps) {
   const { optionSize = 12, onChange, showConfirm, onConfirm, defaultDate, minDate, maxDate } = props;
+  // 是不是改成类似于 :
+  // const [hourValue, setHourValue] = useState(formatTimeNum(defaultDate?.getHours?.()));
+  // 然后在 formatTimeNum 里面判断下，是否为 undefined ，就可以了？
   const [hourValue, setHourValue] = useState((defaultDate && formatTimeNum(defaultDate.getHours())) || '00');
   const [minuteValue, setMinuteValue] = useState(defaultDate && formatTimeNum(defaultDate.getMinutes()) || '00');
   const [secondValue, setSecondValue] = useState(defaultDate && formatTimeNum(defaultDate.getSeconds()) || '00');
@@ -67,7 +70,14 @@ export default function TimePicker(props: TimePickerProps) {
     );
   }
 
+  // 这里的内容，看起来应该可以用 useMemo 缓存一下？
   function renderSelectWheel() {
+    // typo
+    // gethourDisabled => getHourDisabled
+    // 另外，DRY！这里看起来可以抽一个 range 函数，类似于：
+    // const isInRange=(min:number,max:number)=>(value:number)=>value>=min && value<=max;
+    // const getHourDisabled= isInRange(minDate?.getHours() || 0 ,minDate?.getHours() || 24);
+
     const gethourDisabled = (hour: number) => {
       return (minDate && hour < minDate.getHours()) || (maxDate && hour > maxDate.getHours());
     };
@@ -85,6 +95,7 @@ export default function TimePicker(props: TimePickerProps) {
           value={hourValue}
           onChange={handleHourChange}
         >
+          {/* makeArr 生成的结果是从 0 开始的吧？这里看起来应该从 1 开始？ */}
           {makeArr(24).map(hour => (
             <option key={hour} value={formatTimeNum(hour)}
               disabled={gethourDisabled(hour)}
